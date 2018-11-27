@@ -19,8 +19,8 @@ filter_mirna: true
 ## Number of genes to be represented in the Sample-Sample, Sample-Feature, and PCA plots
 numgenes_plots: 1000
 
-## Plotting param for Sample-Feature Heatmap. Number represents number of kmeans in heatmap, 0 will output a hierarchical clustering heatmap, finally, a list of numbers (0,2,4) will output all three heatmaps in the same pdf
-num_kmeans_clust: 4
+## Plotting param for Sample-Feature Heatmap. Number represents number of kmeans in heatmap, 0 will output a hierarchical clustering heatmap, finally, a list of numbers "0,2,4" will output all three heatmaps in the same pdf (NOTE: be sure to include the "quotes" ONLY when giving a list!  Do not give quotes when it's just a single number)
+num_kmeans_clust: 1
 
 #Turn on the following if you want a genome wide snp scan in addition to chr6 scan
 # possible value are [true,false]

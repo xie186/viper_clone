@@ -5,7 +5,7 @@ channels: !!python/tuple
 - defaults
 dependencies:
 #GENERAL
-- snakemake
+- snakemake=4.8.1
 - samtools
 - python>=3.5.2
 - r>=3.4.1
@@ -26,6 +26,7 @@ dependencies:
 - bioconductor-complexheatmap 
 - r-circlize
 - r-dplyr
+- r-dendextend
 
 #DE.snakefile
 - bioconductor-deseq2>=1.12.1
