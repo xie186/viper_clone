@@ -16,8 +16,12 @@ from snakemake.report import data_uri
 
 def get_sphinx_report(config):
     comps = config["comparisons"]
-    git_commit_string = subprocess.check_output('git --git-dir="viper/.git" rev-parse --short HEAD',shell=True).decode('utf-8').strip()
-    git_link = 'https://bitbucket.org/cfce/viper/commits/' + git_commit_string
+    git_commit_string = "XXXXXX"
+    git_link = 'https://bitbucket.org/cfce/viper/commits/'
+    #Check for .git directory
+    if os.path.exists("viper/.git"):
+        git_commit_string = subprocess.check_output('git --git-dir="viper/.git" rev-parse --short HEAD',shell=True).decode('utf-8').strip()
+        git_link = 'https://bitbucket.org/cfce/viper/commits/' + git_commit_string
     file_dict = {
         'align_report': "analysis/" + config["token"] + "/STAR/STAR_Align_Report.png",
         'rRNA_report': "analysis/" + config["token"] + "/STAR_rRNA/STAR_rRNA_Align_Report.png",
