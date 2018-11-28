@@ -57,6 +57,7 @@ def get_sphinx_report(config):
     volcano_list = []
     SF_png_list = []
     gsea_list = []
+    fgsea_list = []
     virusseq_out = "analysis/" + config["token"] + "/virusseq/virusseq_summary.csv"
     cdr_cpk_plot = "analysis/cdr3/CPK.png"
 
@@ -77,6 +78,11 @@ def get_sphinx_report(config):
         tmp_f = "./analysis/%s/gsea/%s/%s.gene_set.enrichment.dotplot.png" % (config["token"], comp, comp)
         if (os.path.isfile(tmp_f)):
             gsea_list.append(viper_data_uri(tmp_f))
+            
+        fgsea_f = "./analysis/%s/fgsea/%s/%s.gene_set.enrichment.dotplot.png" % (config["token"], comp, comp)
+        if (os.path.isfile(fgsea_f)):
+            fgsea_list.append(viper_data_uri(fgsea_f))
+        
 
     if pca_png_list:
         file_dict['pca_png_list'] = pca_png_list
@@ -86,6 +92,8 @@ def get_sphinx_report(config):
         file_dict['sf_png_list'] = SF_png_list
     if gsea_list:
         file_dict['gsea_png_list'] = gsea_list
+    if fgsea_list:
+        file_dict['fgsea_png_list'] = fgsea_list
     report = """
 ==========================================================================================
 VIPER: Visualization Pipeline for RNAseq - {sub_analysis_token}
@@ -326,10 +334,22 @@ KEGG-Pathway Analysis
     report += """
 GSEA
 ====
-    Gene Set Enrichment Analysis was performed on the significant differentially expressed genes using the clusterProfiler R package
+    Gene Set Enrichment Analysis (using GSEA) was performed on the significant differentially expressed genes using the clusterProfiler R package
 """
     if 'gsea_png_list' in file_dict:
         report += "\n\n\t.. image:: " + "\n\n\t.. image:: ".join(file_dict['gsea_png_list'][:]) + "\n"
+    report += "\n"
+
+#------------------------------------------------------------------------------
+# FGSEA section
+#------------------------------------------------------------------------------
+    report += """
+FGSEA
+=====
+    Gene Set Enrichment Analysis (using fgsea) was performed on the significant differentially expressed genes using the clusterProfiler R package
+"""
+    if 'fgsea_png_list' in file_dict:
+        report += "\n\n\t.. image:: " + "\n\n\t.. image:: ".join(file_dict['fgsea_png_list'][:]) + "\n"
     report += "\n"
 
 #------------------------------------------------------------------------------
