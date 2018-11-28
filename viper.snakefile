@@ -41,3 +41,4 @@ include: "./modules/final_report.snakefile"  # rules for HTML report
 include: "./modules/cdr3.snakefile"          # CDR3 Analysis module
 include: "./modules/gsea.snakefile"          # GSEA Analysis module
 include: "./modules/optitype.snakefile"      # HLA Analysis module
+include: "./modules/fgsea.snakefile"         # FGSEA Analysis module

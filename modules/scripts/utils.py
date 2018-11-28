@@ -32,6 +32,7 @@ def getTargetInfo(config):
                         _copyMetaFiles(config),
                         _CDR3(config),
                         _getGCTfile(config),
+                        _fgsea(config),
                         _gsea(config),
                         _rsem(config),
                         _optitype(config)])
@@ -188,6 +189,16 @@ def _CDR3(config):
         else:
             print("WARNING: cdr3 (Trust) analysis skipped because reference is not a valid entry, hg19 or hg38")
     return cdr3_targets
+
+def _fgsea(config):
+    fgsea_targets = []
+    if ('fgsea_analysis' in config and config['fgsea_analysis'] and config['fgsea_db'] and config["comparisons"]):
+        for comp in config["comparisons"]:
+            fgsea_targets.append("analysis/%s/fgsea/%s/%s.gene_set.enrichment.txt" % (config["token"], comp, comp))
+            fgsea_targets.append("analysis/%s/fgsea/%s/%s.gene_list.txt" % (config["token"], comp, comp))
+            fgsea_targets.append("analysis/%s/fgsea/%s/%s.gene_set.enrichment.dotplot.png" % (config["token"], comp, comp))
+
+    return fgsea_targets
 
 def _gsea(config):
     gsea_targets = []

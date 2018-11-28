@@ -35,14 +35,17 @@ dependencies:
 - r-readr
 - r-calibrate
 
-#gsea.snakefile
-- bioconductor-clusterprofiler
-
 #file_format.snakefile
 - bedtools
 - ucsc-bedsort
 - ucsc-bedgraphtobigwig
 - ucsc-fetchchromsizes
+
+#fgsea.snakefile
+- bioconductor-fgsea
+
+#gsea.snakefile
+- bioconductor-clusterprofiler
 
 #immunology.snakefile
 - r-crayon
