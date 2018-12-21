@@ -1,6 +1,6 @@
 
 ==========================================================================================
-VIPER: Visualization Pipeline for RNAseq - {sub_analysis_token}
+VIPER: Visualization Pipeline for RNAseq - sub_analysis_token
 ==========================================================================================
 
 
@@ -47,7 +47,7 @@ Genebody Coverage
     **Line Plot**
 
     .. image:: $gb_cov_curves
-    
+
     **Heatmap**\n
     This graphic may facilitate identification of biased samples.\n
     Scale: Blue = 0 Pink =1
@@ -63,60 +63,34 @@ Principle Component Analysis
     components that can be used to describe variation across samples in fewer dimensions to allow human interpretation.
     Principle component 1 \(PC1\) accounts for the most amount of variation across samples, PC2 the second most, and so on. These PC1 vs PC2 plots
     are colored by sample annotation to demontrate how samples cluster together \(or not\) in reduced dimensional space.
-    For more detailed description of Princilple Component Analysis, start with `wikipedia`_.
+    For more detailed description of Principle Component Analysis, start with `wikipedia`_.
 
     .. _wikipedia: https://en.wikipedia.org/wiki/Principal_component_analysis
 
-"""
+    $pca_png_list
 
-    if 'pca_png_list' in file_dict:
-        if len(file_dict['pca_png_list']) > 1:
-            report += "\n\t.. image:: " + "\n\t.. image:: ".join(file_dict['pca_png_list'][:-1]) + "\n"
-            report += "\n\t" + 'This plot indicates how much of the overall variance is described by the principle components in descending order.' + "\n\n\t.. image:: " + file_dict['pca_png_list'][-1] + "\n"
-        else:
-            report += "\n\t.. image:: " + "\n\t.. image:: ".join(file_dict['pca_png_list'][0]) + "\n"
 
-    report += "\n"
-    report += """
 Sample-to-Sample Correlation Heatmap
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
     This heatmap displays hierarchical clustering of spearman rank correlations across samples.
     Highly correlated samples will cluster together and be represented in red. Samples that do not correlate will be represented in blue.
 
-"""
+    .. image:: $heatmapSS_plot
 
-    if 'heatmapSS_plot' in file_dict:
-        report += "\n\n\t.. image:: " + file_dict['heatmapSS_plot'] + "\n\n\t" + 'Sample-to-Sample data matrix is /analysis/plots/heatmapSS.txt' + "\n"
-
-    report += "\n"
-    report += """
 Sample-Feature Correlation Heatmap
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
     This heatmap illustrates hierarchical clustering of samples based on the top 5 percent or roughly 1000 most variable genes or "features."
     The top colomn color annotations are presented to help identify how sample types, groups, or treatments are clustering together \(or not\).
+    
+    .. image:: $heatmapSF_plot
 
-"""
+    $sf_png_list
 
-    if 'heatmapSF_plot' in file_dict:
-        report += "\n\n\t.. image:: " + file_dict['heatmapSF_plot'] + "\n";
-
-    if 'sf_png_list' in file_dict:
-        report += "\n\t.. image:: " + "\n\t.. image:: ".join(file_dict['sf_png_list'][:]) + "\n"
-
-    report += "\n\n\t" + 'What are *these* genes?' + "\n\n\t" + 'Data used to generate this sample-feature graphic are in /analysis/plots/heatmapSF.txt' + "\n"
-
-    report += "\n"
-
-    if 'FUSION_OUT' in file_dict:
-        report += """
 Fusion Summary
 ==============
-"""
-        report += "\n\t.. image:: " + file_dict['FUSION_OUT'] + "\n";
+    .. image:: $FUSION_OUT
 
-    report += "\n"
- 
-    report += """                
+
 Differential Gene expression
 ============================
     Differential gene expression analysis was performed using both `limma`_ and `DESeq2`_.\n
@@ -128,13 +102,8 @@ Differential Gene expression
 
     This summary image shows the number of genes that are up regulated and down regulated across each comparison at different adjusted P-value cut-offs.
 
-"""
+    .. image:: $DEsummary_plot
 
-    if 'DEsummary_plot' in file_dict:
-        report += "\n\n\t.. image:: " + file_dict['DEsummary_plot'] + "\n"
-
-    report += "\n"
-    report += """
 Volcano Plots
 ^^^^^^^^^^^^^^
     Volcano plots are commonly used graphical representations of differentially expressed genes and statistical significance.
@@ -142,43 +111,27 @@ Volcano Plots
     The plot title indicates the direction of the comparison.
     For example, "treatment_vs_control" indicates that genes colored red are up-regulated in the treatment condition compared to the control condition with a statistically significant P-value.
 
-"""
+    $volcano_png_list
 
-    if 'volcano_png_list' in file_dict:
-        report += "\n\n\t.. image:: " + "\n\n\t.. image:: ".join(file_dict['volcano_png_list'][:]) + "\n"
-
-    report += "\n"
-    report += """
 SNP Plots
 ==========
-    
-"""
-    if 'SNP_chr6' in file_dict:
-        report += "\n"
-        report += """
+
 SNP - Chr6
 ^^^^^^^^^^^
-"""  
-        report += "\n\n\t.. image:: " + file_dict['SNP_chr6'] + "\n"
 
-    if 'SNP_HLA' in file_dict:
-        report += "\n"
-        report += """
+    .. image:: $SNP_chr6
+
 SNP - HLA
 ^^^^^^^^^^^
-"""
-        report += "\n\n\t.. image:: " + file_dict['SNP_HLA'] + "\n"
 
+    .. image:: $SNP_HLA
 
-    if 'SNP_genome' in file_dict:
-        report += "\n" 
-        report += """
 SNP - Genome-wide
 ^^^^^^^^^^^^^^^^^^
-"""
-        report += "\n\n\t.. image:: " + file_dict['SNP_genome'] + "\n"
 
-    report += """
+    ..image:: $SNP_genome
+
+
 Pathway-Analysis
 ================
 
@@ -218,10 +171,8 @@ KEGG-Pathway Analysis
 GSEA
 ====
     Gene Set Enrichment Analysis was performed on the significant differentially expressed genes using the clusterProfiler R package
-"""
-    if 'gsea_png_list' in file_dict:
-        report += "\n\n\t.. image:: " + "\n\n\t.. image:: ".join(file_dict['gsea_png_list'][:]) + "\n"
-    report += "\n"
+
+    $gsea_png_list
 
 #------------------------------------------------------------------------------
 # Virusseq section
