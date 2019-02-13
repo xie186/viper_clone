@@ -37,6 +37,7 @@ rule run_STAR:
         #COOL hack: {{sample}} is LEFT AS A WILDCARD
         unmapped_reads = expand( "analysis/STAR/{{sample}}/{{sample}}.Unmapped.out.{mate}", mate=_mates),
         sjtab = "analysis/STAR/{sample}/{sample}.SJ.out.tab",
+        chimeric = temp("analysis/STAR/{sample}/{sample}.Chimeric.out.sam"),
     params:
         stranded=strand_command,
         gz_support=gz_command,
@@ -60,6 +61,7 @@ rule run_STAR:
         " --limitBAMsortRAM 45000000000"
         " --quantMode GeneCounts"
         " --outReadsUnmapped Fastx"
+        " --chimOutType SeparateSAMold" #OUTPUT chimerics as separate sam
         " --outSAMunmapped Within {params.keepPairs}"
         " && mv {params.prefix}.Aligned.sortedByCoord.out.bam {output.bam}"
         " && mv {params.prefix}.ReadsPerGene.out.tab {output.counts}"
@@ -216,3 +218,41 @@ rule align_SJtab2JunctionsBed:
         "benchmarks/{sample}/{sample}.align_SJtab2JunctionsBed.txt"
     shell:
         "viper/modules/scripts/STAR_SJtab2JunctionsBed.py -f {input} > {output}"
+rule ChimericSamToBam:
+    """rule to convert the chimeric.out.sam to bam file"""
+    input:
+        "analysis/STAR/{sample}/{sample}.Chimeric.out.sam"
+    output:
+        "analysis/STAR/{sample}/{sample}.Chimeric.out.bam"
+    threads: 8
+    message: "Converting Chimeric Sam to Bam for {wildcards.sample}"
+    benchmark:
+        "benchmarks/{sample}/{sample}.ChimericSamToBam.txt"
+    shell:
+        "samtools view -@ {threads} -Sb {input} > {output}"
+
+rule SortChimericBam:
+    """rule to sort chimeric.out.bam file"""
+    input:
+        "analysis/STAR/{sample}/{sample}.Chimeric.out.bam"
+    output:
+        "analysis/STAR/{sample}/{sample}.Chimeric.out.sorted.bam"
+    threads: 8
+    message: "Sorting Chimeric Bam {wildcards.sample}"
+    benchmark:
+        "benchmarks/{sample}/{sample}.SortChimericBam.txt"
+    shell:
+        "samtools sort -@ {threads} -o {output} {input}"
+
+rule IndexChimericBam:
+    """rule to sort chimeric.out.bam file"""
+    input:
+        "analysis/STAR/{sample}/{sample}.Chimeric.out.sorted.bam"
+    output:
+        "analysis/STAR/{sample}/{sample}.Chimeric.out.sorted.bam.bai"
+    threads: 8
+    message: "Indexing Chimeric Bam {wildcards.sample}"
+    benchmark:
+        "benchmarks/{sample}/{sample}.IndexChimericBam.txt"
+    shell:
+        "samtools index -@ {threads} {input}"
