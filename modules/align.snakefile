@@ -9,6 +9,11 @@
 
 def getFastq(wildcards):
     return config["samples"][wildcards.sample]
+def getLeftFastq(wildcards):
+    return config["samples"][wildcards.sample][0]
+def getRightFastq(wildcards):
+    return config["samples"][wildcards.sample][1]    
+
 
 strand_command=""
 rRNA_strand_command=""
@@ -50,6 +55,7 @@ rule run_STAR:
         "benchmarks/{sample}/{sample}.run_STAR.txt"
     shell:
         "STAR --runMode alignReads --runThreadN {threads}"
+        "--chimOutJunctionFormat 1"
         " --genomeDir {config[star_index]}"
         " --readFilesIn {input} {params.gz_support}" 
         " --outFileNamePrefix {params.prefix}."
@@ -119,7 +125,9 @@ rule batch_effect_removal_star:
 
 rule run_STAR_fusion:
     input:
-        bam="analysis/STAR/{sample}/{sample}.sorted.bam" #just to make sure STAR output is available before STAR_Fusion
+        bam="analysis/STAR/{sample}/{sample}.sorted.bam", #just to make sure STAR output is available before STAR_Fusion
+        left_fastq = getLeftFastq,
+        right_fastq = getRightFastq
     output:
         protected("analysis/STAR_Fusion/{sample}/{sample}.fusion_candidates.final"),
         protected("analysis/STAR_Fusion/{sample}/{sample}.fusion_candidates.final.abridged")
@@ -130,6 +138,8 @@ rule run_STAR_fusion:
         "benchmarks/{sample}/{sample}.run_STAR_fusion.txt"
     shell:
         "STAR-Fusion --chimeric_junction analysis/STAR/{wildcards.sample}/{wildcards.sample}.Chimeric.out.junction "
+        "--FusionInspector inspect --left_fq {input.left_fastq} --right_fq {input.right_fastq}"
+        "--examine_coding_effect"
         "--genome_lib_dir {config[genome_lib_dir]} --output_dir analysis/STAR_Fusion/{wildcards.sample} >& {log}"
         " && mv analysis/STAR_Fusion/{wildcards.sample}/star-fusion.fusion_candidates.final {output[0]}"
         " && mv analysis/STAR_Fusion/{wildcards.sample}/star-fusion.fusion_candidates.final.abridged {output[1]}"
