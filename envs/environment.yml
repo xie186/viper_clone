@@ -11,8 +11,8 @@ dependencies:
 - r>=3.4.1
 
 #align.snakefile
-- star>=2.5.3a
-- star-fusion=0.5.4
+- star=2.6.1b
+- star-fusion=1.5.0
 - bioconductor-sva
 
 #cdr3.snakefile-
