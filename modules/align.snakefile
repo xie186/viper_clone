@@ -55,7 +55,7 @@ rule run_STAR:
         "benchmarks/{sample}/{sample}.run_STAR.txt"
     shell:
         "STAR --runMode alignReads --runThreadN {threads}"
-        "--chimOutJunctionFormat 1"
+        " --chimOutJunctionFormat 1"
         " --genomeDir {config[star_index]}"
         " --readFilesIn {input} {params.gz_support}" 
         " --outFileNamePrefix {params.prefix}."
@@ -63,7 +63,7 @@ rule run_STAR:
         " --outSAMmode Full --outSAMattributes All {params.stranded}"
         " --outSAMattrRGline {params.readgroup}"
         " --outSAMtype BAM SortedByCoordinate"
-        " --limitBAMsortRAM 45000000000"
+        " --limitBAMsortRAM 50000000000" #50 Gib
         " --quantMode GeneCounts"
         " --outReadsUnmapped Fastx"
         " --outSAMunmapped Within {params.keepPairs}"
@@ -138,8 +138,8 @@ rule run_STAR_fusion:
         "benchmarks/{sample}/{sample}.run_STAR_fusion.txt"
     shell:
         "STAR-Fusion --chimeric_junction analysis/STAR/{wildcards.sample}/{wildcards.sample}.Chimeric.out.junction "
-        "--FusionInspector inspect --left_fq {input.left_fastq} --right_fq {input.right_fastq}"
-        "--examine_coding_effect"
+        "--FusionInspector inspect --left_fq {input.left_fastq} --right_fq {input.right_fastq} "
+        "--examine_coding_effect "
         "--genome_lib_dir {config[genome_lib_dir]} --output_dir analysis/STAR_Fusion/{wildcards.sample} >& {log}"
         " && mv analysis/STAR_Fusion/{wildcards.sample}/star-fusion.fusion_candidates.final {output[0]}"
         " && mv analysis/STAR_Fusion/{wildcards.sample}/star-fusion.fusion_candidates.final.abridged {output[1]}"
