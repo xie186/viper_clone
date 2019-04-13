@@ -129,26 +129,34 @@ rule run_STAR_fusion:
         left_fastq = getLeftFastq,
         right_fastq = getRightFastq
     output:
-        protected("analysis/STAR_Fusion/{sample}/{sample}.fusion_candidates.final"),
-        protected("analysis/STAR_Fusion/{sample}/{sample}.fusion_candidates.final.abridged")
+        protected("analysis/STAR_Fusion/{sample}/star-fusion.fusion_predictions.tsv"),
+        protected("analysis/STAR_Fusion/{sample}/star-fusion.fusion_predictions.abridged.tsv")
     log:
         "analysis/STAR_Fusion/{sample}/{sample}.star_fusion.log"
     message: "Running STAR fusion on {wildcards.sample}"
+    threads: 8
     benchmark:
         "benchmarks/{sample}/{sample}.run_STAR_fusion.txt"
     shell:
         "STAR-Fusion --chimeric_junction analysis/STAR/{wildcards.sample}/{wildcards.sample}.Chimeric.out.junction "
         "--FusionInspector inspect --left_fq {input.left_fastq} --right_fq {input.right_fastq} "
+        "--CPU {threads} "
         "--examine_coding_effect "
         "--genome_lib_dir {config[genome_lib_dir]} --output_dir analysis/STAR_Fusion/{wildcards.sample} >& {log}"
-        " && mv analysis/STAR_Fusion/{wildcards.sample}/star-fusion.fusion_candidates.final {output[0]}"
-        " && mv analysis/STAR_Fusion/{wildcards.sample}/star-fusion.fusion_candidates.final.abridged {output[1]}"
-        " && touch {output[1]}" # For some sample, final.abridged is created but not .final file; temp hack before further investigate into this
+        #DROPPING THESE- output should be star-fusion.fusion_predictions.tsv
+        # and star-fusion.fusion_predictions.abridged.tsv
+        
+        #THESE names are very mouch tied to the version of STAR-Fusion
+        #These are for STAR-Fusion=1.5.0
+        #" && cp analysis/STAR_Fusion/{wildcards.sample}/FusionInspector-inspect/finspector.fusion_predictions.final {output[0]}"
+        #" && cp analysis/STAR_Fusion/{wildcards.sample}/FusionInspector-inspect/finspector.fusion_predictions.final.abridged {output[1]}"
+        #" && touch {output[1]}" # For some sample, final.abridged is created but not .final file; temp hack before further investigate into this
 
 
 rule run_STAR_fusion_report:
     input:
-        sf_list = expand("analysis/STAR_Fusion/{sample}/{sample}.fusion_candidates.final.abridged", sample=config["ordered_sample_list"]),
+        #sf_list = expand("analysis/STAR_Fusion/{sample}/{sample}.fusion_predictions.final.abridged", sample=config["ordered_sample_list"]),
+        sf_list = expand("analysis/STAR_Fusion/{sample}/star-fusion.fusion_predictions.abridged.tsv", sample=config["ordered_sample_list"]),
         force_run_upon_meta_change = config['metasheet'],
         force_run_upon_config_change = config['config_file']
     output:

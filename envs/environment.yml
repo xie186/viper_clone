@@ -11,8 +11,8 @@ dependencies:
 - r>=3.4.1
 
 #align.snakefile
-- star=2.6.1d
-- star-fusion=1.5.0
+- star=2.7.0f
+- star-fusion=1.6.0
 - bioconductor-sva
 
 #cdr3.snakefile-
@@ -83,3 +83,7 @@ dependencies:
 - cairo>=1.14.10
 #BUG missing libproj.so.12
 - proj4=4.9.3
+
+- pip:
+  #for star-fusion
+  - igv_reports
