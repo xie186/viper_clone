@@ -23,7 +23,8 @@ def printFusionInfo( file_list ):
     main_df = pd.DataFrame()
     for cur_file in file_list:
         df = pd.read_table(cur_file, index_col=False)
-        sample = re.sub("\..*", "", os.path.basename(cur_file))
+        #NOTE: path is like: analysis/STAR_Fusion/{sample}/star-fusion.fusion_predictions.abridged.tsv
+        sample = cur_file.split("/")[-2] #sample is 2nd to last elm
         df["Sample"] = sample
         df["TotalReads"] = df["JunctionReadCount"] + df["SpanningFragCount"]
         df["FusionName"] = df["#FusionName"]
