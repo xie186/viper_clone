@@ -2,8 +2,7 @@
 
 hg19:
   ref_fasta: ./ref_files/hg19/assembly/hg19.fasta
-  #star_index: ./ref_files/hg19/STAR/humanhg19
-  star_index: ./ref_files/hg19/STAR
+  star_index: ./ref_files/hg19/STAR.2.7.0f
   rsem_ref: ./ref_files/hg19/RSEM/hg19
   gtf_file: ./ref_files/hg19/Hg19_CTAT_resource_lib/ref_annot.gtf
   bed_file: ./ref_files/hg19/refseqGenesHg19.bed
@@ -13,7 +12,7 @@ hg19:
   reference: hg19
   gene_annotation: viper/static/humanhg19.annot.csv.bz2
   #STAR-Fusion
-  genome_lib_dir: ./ref_files/hg19/STAR_fusion/ctat_genome_lib_build_dir/
+  genome_lib_dir: ./ref_files/hg19/STAR_fusion1.6.0_300bp/ctat_genome_lib_build_dir/
 
   snpEff_conf: ./ref_files/hg19/snpEff/snpEff.config
   snpEff_db: hg19

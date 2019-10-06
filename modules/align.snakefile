@@ -129,6 +129,7 @@ rule run_STAR_fusion:
         left_fastq = getLeftFastq,
         right_fastq = getRightFastq
     output:
+        #LEN: TODO- CLEAR this out!
         #"analysis/STAR_Fusion/{sample}/star-fusion.fusion_predictions.tsv",
         #"analysis/STAR_Fusion/{sample}/star-fusion.fusion_predictions.abridged.tsv",
         #"analysis/STAR_Fusion/{sample}/FusionInspector-inspect/finspector.FusionInspector.fusions.tsv",
@@ -160,9 +161,11 @@ rule run_STAR_fusion_report:
     """NOTE: this rule is broken b/c I'm not sure which output file to use
     from run_STAR_fusion"""
     input:
+        #LEN: TODO- CLEAR this out!
         #sf_list = expand("analysis/STAR_Fusion/{sample}/{sample}.fusion_predictions.final.abridged", sample=config["ordered_sample_list"]),
         #sf_list = expand("analysis/STAR_Fusion/{sample}/star-fusion.fusion_predictions.abridged.tsv", sample=config["ordered_sample_list"]),
-        sf_list = expand("analysis/STAR_Fusion/{sample}/FusionInspector-inspect/finspector.FusionInspector.fusions.tsv", sample=config["ordered_sample_list"]),
+        #sf_list = expand("analysis/STAR_Fusion/{sample}/FusionInspector-inspect/finspector.FusionInspector.fusions.tsv", sample=config["ordered_sample_list"]),
+        sf_list = expand("analysis/STAR_Fusion/{sample}/star-fusion.fusion_predictions.abridged.coding_effect.tsv", sample=config["ordered_sample_list"]),
         force_run_upon_meta_change = config['metasheet'],
         force_run_upon_config_change = config['config_file']
     output:
