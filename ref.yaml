@@ -6,7 +6,7 @@ hg19:
   rsem_ref: ./ref_files/hg19/RSEM/hg19
   gtf_file: ./ref_files/hg19/Hg19_CTAT_resource_lib/ref_annot.gtf
   bed_file: ./ref_files/hg19/refseqGenesHg19.bed
-  star_rRNA_index: ./ref_files/hg19/humanhg38_ncrna/
+  star_rRNA_index: ./ref_files/hg19/star_2.7.0f_GRCh37.35_ncrna
 
   #Reference organism; possible value - hg19, mm9 etc.
   reference: hg19
