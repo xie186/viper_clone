@@ -47,7 +47,8 @@ rule run_STAR:
         gz_support=gz_command,
         prefix=lambda wildcards: "analysis/STAR/{sample}/{sample}".format(sample=wildcards.sample),
         readgroup=lambda wildcards: "ID:{sample} PL:illumina LB:{sample} SM:{sample}".format(sample=wildcards.sample),
-        keepPairs = _keepPairs
+        keepPairs = _keepPairs,
+        star_index = config['star_index'],
     threads: 8
     message: "Running STAR Alignment on {wildcards.sample}"
     priority: 10
@@ -56,7 +57,7 @@ rule run_STAR:
     shell:
         "STAR --runMode alignReads --runThreadN {threads}"
         " --chimOutJunctionFormat 1"
-        " --genomeDir {config[star_index]}"
+        " --genomeDir {params.star_index}"
         " --readFilesIn {input} {params.gz_support}" 
         " --outFileNamePrefix {params.prefix}."
         " --outSAMstrandField intronMotif"
@@ -112,7 +113,8 @@ rule batch_effect_removal_star:
         starpdfoutput="analysis/" + config["token"] + "/STAR/star_combat_qc.pdf"
     params:
         batch_column="batch",
-        datatype = "star"
+        datatype = "star",
+        token = config['token'],
     message: "Removing batch effect from STAR Gene Count matrix, if errors, check metasheet for batches, refer to README for specifics"
     #priority: 2
     benchmark:
@@ -120,7 +122,7 @@ rule batch_effect_removal_star:
     shell:
         "Rscript viper/modules/scripts/batch_effect_removal.R {input.starmat} {input.annotFile} "
         "{params.batch_column} {params.datatype} {output.starcsvoutput} {output.starpdfoutput} "
-        " && mv {input.starmat} analysis/{config[token]}/STAR/without_batch_correction_STAR_Gene_Counts.csv"
+        " && mv {input.starmat} analysis/{params.token}/STAR/without_batch_correction_STAR_Gene_Counts.csv"
 
 
 rule run_STAR_fusion:
@@ -128,6 +130,8 @@ rule run_STAR_fusion:
         bam="analysis/STAR/{sample}/{sample}.sorted.bam", #just to make sure STAR output is available before STAR_Fusion
         left_fastq = getLeftFastq,
         right_fastq = getRightFastq
+    params:
+        genome_lib_dir = config['genome_lib_dir']
     output:
         #LEN: TODO- CLEAR this out!
         #"analysis/STAR_Fusion/{sample}/star-fusion.fusion_predictions.tsv",
@@ -146,7 +150,7 @@ rule run_STAR_fusion:
         "--FusionInspector inspect --left_fq {input.left_fastq} --right_fq {input.right_fastq} "
         "--CPU {threads} "
         "--examine_coding_effect "
-        "--genome_lib_dir {config[genome_lib_dir]} --output_dir analysis/STAR_Fusion/{wildcards.sample} >& {log}"
+        "--genome_lib_dir {params.genome_lib_dir} --output_dir analysis/STAR_Fusion/{wildcards.sample} >& {log}"
         #DROPPING THESE- output should be star-fusion.fusion_predictions.tsv
         # and star-fusion.fusion_predictions.abridged.tsv
         
@@ -189,14 +193,15 @@ rule run_rRNA_STAR:
         stranded=rRNA_strand_command,
         gz_support=gz_command,
         prefix=lambda wildcards: "analysis/STAR_rRNA/{sample}/{sample}".format(sample=wildcards.sample),
-        readgroup=lambda wildcards: "ID:{sample} PL:illumina LB:{sample} SM:{sample}".format(sample=wildcards.sample)
+        readgroup=lambda wildcards: "ID:{sample} PL:illumina LB:{sample} SM:{sample}".format(sample=wildcards.sample),
+        star_rRNA_index=config['star_rRNA_index'],
     threads: 8
     message: "Running rRNA STAR for {wildcards.sample}"
     benchmark:
         "benchmarks/{sample}/{sample}.run_rRNA_STAR.txt"
     shell:
         "STAR --runMode alignReads --runThreadN {threads}"
-        " --genomeDir {config[star_rRNA_index]}"
+        " --genomeDir {params.star_rRNA_index}"
         " --readFilesIn {input} {params.gz_support}"
         " --outFileNamePrefix {params.prefix}."
         " --outSAMmode Full --outSAMattributes All {params.stranded}"

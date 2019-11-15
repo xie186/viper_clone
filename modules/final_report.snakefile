@@ -35,10 +35,12 @@ rule copy_meta_files:
     input:
         config_file = config["config_file"], 
         meta_file = config["metasheet"]
+    params:
+        token=config['token'],
     output:
         config_file = _copyMetaFiles(config)[0], 
         meta_file = _copyMetaFiles(config)[1]
-    message: "Saving config and metasheet into analysis/{config[token]}"
+    message: "Saving config and metasheet into analysis/{params.token}"
     shell:
         "cp {input.config_file} {output.config_file} && "
         "cp {input.meta_file} {output.meta_file}"         

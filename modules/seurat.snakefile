@@ -19,6 +19,6 @@ rule run_seurat:
     benchmark:
         "benchmarks/" + config["token"] + "/run_seurat.txt"
     shell:
-        "{config[seurat_path]}/Rscript --default-packages=stats,graphics,grDevices,utils,datasets,base,methods viper/modules/scripts/run_seurat.R "
+        "{config['seurat_path']}/Rscript --default-packages=stats,graphics,grDevices,utils,datasets,base,methods viper/modules/scripts/run_seurat.R "
         "{input.gene_matrix} {input.metasheet} {output.seurat_out_dir} "
         "&& touch {output.seurat_out}"

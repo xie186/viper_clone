@@ -19,10 +19,12 @@ rule CDR3_TRUST:
         outdir="analysis/cdr3/{sample}/",
         pypath="PYTHONPATH=%s" % config["python2_pythonpath"],
         genome=config["reference"],
+        python2=config['python2'],
+        trust_path=config['trust_path'],
     message:
         "CDR3: Performing CDR3 analysis using TRUST"
     shell:
-        "{params.pypath} {config[python2]} {config[trust_path]} -f {input.bam} -o {params.outdir} -a -g {params.genome} > {output.log}"
+        "{params.pypath} {params.python2} {params.trust_path} -f {input.bam} -o {params.outdir} -a -g {params.genome} > {output.log}"
 
 rule calc_CPK:
     """RULE to calculate the CPK of each trust cdr .fa output

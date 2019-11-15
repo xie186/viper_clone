@@ -17,17 +17,21 @@ rule filter_cuff_matrix:
     output:
         filtered_rpkm = "analysis/" + config["token"] + "/cufflinks/Cuff_Gene_Counts.filtered.csv"
     params:
-        sample_names = " ".join(config["ordered_sample_list"])
+        sample_names = " ".join(config["ordered_sample_list"]),
+        min_num_samples_expressing_at_threshold=config['min_num_samples_expressing_at_threshold'],
+        RPKM_threshold=config['RPKM_threshold'],
+        filter_mirna=config['filter_mirna'],
+        numgenes_plots=config['numgenes_plots'],
     message: "Generating Pre-processed Cuff RPKM matrix file"
     benchmark:
         "benchmarks/" + config["token"] + "/filter_cuff_matrix.txt"
     shell:
         "Rscript viper/modules/scripts/filter_cuff_matrix.R "
         "--rpkm_file {input.rpkmFile} "
-        "--min_samples {config[min_num_samples_expressing_at_threshold]} "
-        "--RPKM_cutoff {config[RPKM_threshold]} "
-        "--filter_miRNA {config[filter_mirna]} "
-        "--numgenes {config[numgenes_plots]} "
+        "--min_samples {params.min_num_samples_expressing_at_threshold} "
+        "--RPKM_cutoff {params.RPKM_threshold} "
+        "--filter_miRNA {params.filter_mirna} "
+        "--numgenes {params.numgenes_plots} "
         "--out_file {output.filtered_rpkm} "
         "--sample_names {params.sample_names} "
 

@@ -38,6 +38,8 @@ rule sample_snps_corr_hla:
         snps = expand("analysis/snp/{sample}/{sample}.snp.hla.txt", sample=config["ordered_sample_list"]),
         metasheet = config['metasheet'],
         force_run_upon_config_change = config['config_file']
+    params:
+        python2=config['python2'],
     output:
         snp_matrix="analysis/" + config["token"] + "/snp/snp_corr.hla.txt",
         snp_png="analysis/" + config["token"] + "/plots/sampleSNPcorr_plot.hla.png",
@@ -46,7 +48,7 @@ rule sample_snps_corr_hla:
     benchmark:
         "benchmarks/" + config["token"] + "/sample_snps_corr_hla.txt"
     shell:
-        "{config[python2]} viper/modules/scripts/sampleSNPcorr.py {input.snps}> {output.snp_matrix} && "
+        "{params.python2} viper/modules/scripts/sampleSNPcorr.py {input.snps}> {output.snp_matrix} && "
         "Rscript viper/modules/scripts/sampleSNPcorr_plot.R {output.snp_matrix} {input.metasheet} {output.snp_png} {output.snp_pdf}"
 
 

@@ -47,6 +47,8 @@ rule optitype:
     params:
         pypath="PYTHONPATH=%s" % config["python2_pythonpath"],
         outpath="analysis/optitype/{sample}",
-        name="{sample}"
+        name="{sample}",
+        python2=config['python2'],
+        optitype_path=config['optitype_path'],
     shell:
-        "{params.pypath} {config[python2]} {config[optitype_path]}/OptiTypePipeline.py -i {input} -r -o {params.outpath} -c viper/static/optitype/config.ini -p {params.name}"
+        "{params.pypath} {params.python2} {params.optitype_path}/OptiTypePipeline.py -i {input} -r -o {params.outpath} -c viper/static/optitype/config.ini -p {params.name}"

@@ -38,11 +38,12 @@ rule heatmapSS_plot:
         ss_txt_out="analysis/" + config["token"] + "/plots/heatmapSS.txt"
     message: "Generating Sample-Sample Heatmap"
     params:
-        ss_out_dir = "analysis/" + config["token"] + "/plots/"
+        ss_out_dir = "analysis/" + config["token"] + "/plots/",
+        token=config['token'],
     benchmark:
         "benchmarks/" + config["token"] + "/heatmapSS_plot.txt"
     shell:
-        "mkdir -p analysis/{config[token]}/plots/images && Rscript viper/modules/scripts/heatmapSS_plot.R {input.rpkmFile} "
+        "mkdir -p analysis/{params.token}/plots/images && Rscript viper/modules/scripts/heatmapSS_plot.R {input.rpkmFile} "
         "{input.annotFile} {params.ss_out_dir} "
 
 
@@ -56,10 +57,11 @@ rule heatmapSF_plot:
         sf_txt_out="analysis/" + config["token"] + "/plots/heatmapSF.txt"
     params:
         num_kmeans_clust = config["num_kmeans_clust"],
-        sf_out_dir = "analysis/" + config["token"] + "/plots/"
+        sf_out_dir = "analysis/" + config["token"] + "/plots/",
+        token=config['token'],
     message: "Generating Sample-Feature heatmap"
     benchmark:
         "benchmarks/" + config["token"] + "/heatmapSF_plot.txt"
     shell:
-        "mkdir -p analysis/{config[token]}/plots/images && Rscript viper/modules/scripts/heatmapSF_plot.R {input.rpkmFile} "
+        "mkdir -p analysis/{params.token}/plots/images && Rscript viper/modules/scripts/heatmapSF_plot.R {input.rpkmFile} "
         "{input.annotFile} {params.num_kmeans_clust} {params.sf_out_dir} "

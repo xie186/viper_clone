@@ -17,11 +17,15 @@ rule read_distrib_qc:
     message: "Running RseQC read distribution on {wildcards.sample}"
     benchmark:
         "benchmarks/{sample}/{sample}.read_distrib_qc.txt"
-    params: pypath="PYTHONPATH=%s" % config["python2_pythonpath"]
+    params:
+        pypath="PYTHONPATH=%s" % config["python2_pythonpath"],
+        python2=config['python2'],
+        rseqc_path=config['rseqc_path'],
+        bed_file=config['bed_file'],
     shell:
-        "{params.pypath} {config[python2]} {config[rseqc_path]}/read_distribution.py"
+        "{params.pypath} {params.python2} {params.rseqc_path}/read_distribution.py"
         " --input-file={input}"
-        " --refgene={config[bed_file]} 1>{output}"
+        " --refgene={params.bed_file} 1>{output}"
 
 rule read_distrib_qc_matrix:
     input:
@@ -53,15 +57,17 @@ rule gene_body_cvg_qc:
         "benchmarks/{sample}/{sample}.gene_body_cvg_qc.txt"
     params: 
         pypath="PYTHONPATH=%s" % config["python2_pythonpath"],
-        ds_bam = lambda wildcards: "analysis/RSeQC/gene_body_cvg/" + wildcards.sample + "/" + wildcards.sample + ".ds.bam"
+        ds_bam = lambda wildcards: "analysis/RSeQC/gene_body_cvg/" + wildcards.sample + "/" + wildcards.sample + ".ds.bam",
+        python2=config['python2'],
+        rseqc_path=config['rseqc_path'],
+        bed_file=config['bed_file'],
     shell:
         "picard DownsampleSam VALIDATION_STRINGENCY=LENIENT I={input}"
         " O={params.ds_bam} P=$(samtools flagstat -@ {threads} {input} |"
         " perl -e 'my $line = <STDIN>; chomp $line; my( $one, $two ) = ($line =~ /(\d+)\s+\+\s+(\d+)/); my $total = $one + $two;  my $one_M = $total < 1000000 ? 1 : (1000000 / $total); my $final_val = sprintf(\"%.2f\",$one_M); print $final_val > 0.00 ? $final_val : 0.01;') && "
         "samtools index {params.ds_bam} && "
-        "{params.pypath} {config[python2]} {config[rseqc_path]}/geneBody_coverage.py -i {params.ds_bam} -r {config[bed_file]}"
+        "{params.pypath} {params.python2} {params.rseqc_path}/geneBody_coverage.py -i {params.ds_bam} -r {params.bed_file}"
         " -f png -o analysis/RSeQC/gene_body_cvg/{wildcards.sample}/{wildcards.sample}"
-
 
 rule plot_gene_body_cvg:
     input:
@@ -88,23 +94,30 @@ rule junction_saturation:
     message: "Determining junction saturation for {wildcards.sample}"
     benchmark:
         "benchmarks/{sample}/{sample}.junction_saturation.txt"
-    params: pypath="PYTHONPATH=%s" % config["python2_pythonpath"]
+    params:
+        pypath="PYTHONPATH=%s" % config["python2_pythonpath"],
+        python2=config['python2'],
+        rseqc_path=config['rseqc_path'],
+        bed_file=config['bed_file'],
     shell:
-        "{params.pypath} {config[python2]} {config[rseqc_path]}/junction_saturation.py -i {input} -r {config[bed_file]}"
+        "{params.pypath} {params.python2} {params.rseqc_path}/junction_saturation.py -i {input} -r {params.bed_file}"
         " -o analysis/RSeQC/junction_saturation/{wildcards.sample}/{wildcards.sample}"
 
 
 rule collect_insert_size:
     input:
         "analysis/STAR/{sample}/{sample}.sorted.bam"
+    params:
+        picard_path=config['picard_path'],
+        ref_fasta=config['ref_fasta'],
     output:
         protected("analysis/RSeQC/insert_size/{sample}/{sample}.histogram.pdf")
     message: "Collecting insert size for {wildcards.sample}"
     benchmark:
         "benchmarks/{sample}/{sample}.collect_insert_size.txt"
     shell:
-        "{config[picard_path]} CollectInsertSizeMetrics"
-        " H={output} I={input} O=analysis/RSeQC/insert_size/{wildcards.sample}/{wildcards.sample} R={config[ref_fasta]}"
+        "{params.picard_path} CollectInsertSizeMetrics"
+        " H={output} I={input} O=analysis/RSeQC/insert_size/{wildcards.sample}/{wildcards.sample} R={params.ref_fasta}"
 
 
 

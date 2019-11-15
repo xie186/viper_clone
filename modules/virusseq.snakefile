@@ -32,8 +32,8 @@ rule virusseq_map:
         "benchmarks/{sample}/{sample}.virusseq_map.txt"
     threads: 8
     shell:
-        "STAR --runMode alignReads --runThreadN {threads} --genomeDir {config[virusseq_index]}"
-        " --sjdbGTFfile {config[virusseq_gtf_file]}"
+        "STAR --runMode alignReads --runThreadN {threads} --genomeDir {config['virusseq_index']}"
+        " --sjdbGTFfile {config['virusseq_gtf_file']}"
         "  --readFilesIn {input} --outFileNamePrefix {params.prefix}"
         "  --outSAMstrandField intronMotif"
         # STRANDED information DROPPED
@@ -57,7 +57,7 @@ rule virusseq_cuff:
     benchmark:
         "benchmarks/{sample}/{sample}.virusseq_cuff.txt"
     shell:
-        "cufflinks -o analysis/virusseq/{wildcards.sample} -p {threads} -G {config[virusseq_gtf_file]} {params.library_command} {input} && mv analysis/virusseq/{wildcards.sample}/transcripts.gtf analysis/virusseq/{wildcards.sample}/{wildcards.sample}.virusseq.transcripts.gtf"
+        "cufflinks -o analysis/virusseq/{wildcards.sample} -p {threads} -G {config['virusseq_gtf_file']} {params.library_command} {input} && mv analysis/virusseq/{wildcards.sample}/transcripts.gtf analysis/virusseq/{wildcards.sample}/{wildcards.sample}.virusseq.transcripts.gtf"
 
 rule virusseq_filterTranscripts:
     input:
@@ -103,7 +103,7 @@ rule virusseq_bamToBdg:
     benchmark:
         "benchmarks/{sample}/{sample}.virusseq_bamToBdg.txt"
     shell:
-        "bedtools genomecov -bg -split -ibam {input} -g {config[virusseq_chrom_len]} > {output}"
+        "bedtools genomecov -bg -split -ibam {input} -g {config['virusseq_chrom_len']} > {output}"
 
 rule virusseq_sortBdg:
     """sort bedGraph"""
@@ -126,7 +126,7 @@ rule virusseq_bdgToBw:
     benchmark:
         "benchmarks/{sample}/{sample}.virusseq_bdgToBw.txt"
     shell:
-        "bedGraphToBigWig {input} {config[virusseq_chrom_len]} {output}"
+        "bedGraphToBigWig {input} {config['virusseq_chrom_len']} {output}"
 
 rule virusseq_SJtab2JunctionsBed:
     """Convert STAR's SJ.out.tab to (tophat) junctions.bed BED12 format"""

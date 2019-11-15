@@ -26,11 +26,12 @@ rule run_cufflinks:
     threads: 4
     message: "Running Cufflinks on {wildcards.sample}"
     params:
-        library_command=cuff_command
+        library_command=cuff_command,
+        gtf_file=config['gtf_file'],
     benchmark:
         "benchmarks/{sample}/{sample}.run_cufflinks.txt"
     shell:
-        "cufflinks -o analysis/cufflinks/{wildcards.sample} -p {threads} -G {config[gtf_file]} {params.library_command} {input}"
+        "cufflinks -o analysis/cufflinks/{wildcards.sample} -p {threads} -G {params.gtf_file} {params.library_command} {input}"
         " && mv analysis/cufflinks/{wildcards.sample}/genes.fpkm_tracking {output.genes_cuff_out}"
         " && mv analysis/cufflinks/{wildcards.sample}/isoforms.fpkm_tracking {output.iso_cuff_out}"
 
@@ -91,7 +92,8 @@ rule batch_effect_removal_cufflinks:
         cuffpdfoutput="analysis/" + config["token"] + "/cufflinks/cuff_combat_qc.pdf"
     params:
         batch_column="batch",
-        datatype = "cufflinks"
+        datatype = "cufflinks",
+        token=config['token'],
     message: "Removing batch effect from Cufflinks Gene Count matrix, if errors, check metasheet for batches, refer to README for specifics"
     #priority: 2
     benchmark:
@@ -99,7 +101,7 @@ rule batch_effect_removal_cufflinks:
     shell:
         "Rscript viper/modules/scripts/batch_effect_removal.R {input.cuffmat} {input.annotFile} {params.batch_column} "
         "{params.datatype} {output.cuffcsvoutput} {output.cuffpdfoutput} "
-        " && mv {input.cuffmat} analysis/{config[token]}/cufflinks/without_batch_correction_Cuff_Gene_Counts.csv "
+        " && mv {input.cuffmat} analysis/{params.token}/cufflinks/without_batch_correction_Cuff_Gene_Counts.csv "
 
 
 rule fpkm_plot:

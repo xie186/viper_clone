@@ -34,7 +34,7 @@ rule rsem:
     shell:
         "rsem-calculate-expression -p {threads} {params.stranded}"
         " {params.paired_end} --star {params.gz_support}"
-        " --estimate-rspd --append-names {input} {config[rsem_ref]}"
+        " --estimate-rspd --append-names {input} {config['rsem_ref']}"
         " analysis/rsem/{params.sample_name}/{params.sample_name} > {log}"
 
 rule rsem_iso_matrix:
@@ -101,17 +101,21 @@ rule rsem_filter_gene_ct_matrix:
     output:
         filtered_tpm = "analysis/" + config["token"] + "/rsem/rsem_gene_ct_matrix.filtered.csv"
     params:
-        sample_names = " ".join(config["ordered_sample_list"])
+        sample_names = " ".join(config["ordered_sample_list"]),
+        min_num_samples_expressing_at_threshold=config['min_num_samples_expressing_at_threshold'],
+        RPKM_threshold=config['RPKM_threshold'],
+        filter_mirna=config['filter_mirna'],
+        numgenes_plots=config['numgenes_plots'],
     message: "Generating Pre-processed RSEM TPM matrix file"
     benchmark:
         "benchmarks/" + config["token"] + "/rsem_filter_gene_ct_matrix.txt"
     shell:
         "Rscript viper/modules/scripts/rsem_filter_gene_ct_matrix.R "
         "--tpm_file {input.tpmFile} "
-        "--min_samples {config[min_num_samples_expressing_at_threshold]} "
-        "--TPM_cutoff {config[TPM_threshold]} "
-        "--filter_miRNA {config[filter_mirna]} "
-        "--numgenes {config[numgenes_plots]} "
+        "--min_samples {params.min_num_samples_expressing_at_threshold} "
+        "--TPM_cutoff {params.TPM_threshold} "
+        "--filter_miRNA {params.filter_mirna} "
+        "--numgenes {params.numgenes_plots} "
         "--out_file {output.filtered_tpm} "
         "--sample_names {params.sample_names} "
 
@@ -124,7 +128,8 @@ rule batch_effect_removal_rsem:
         rsempdfoutput="analysis/" + config["token"] + "/rsem/rsem_combat_qc.pdf"
     params:
         batch_column="batch",
-        datatype = "rsem"
+        datatype = "rsem",
+        token=config['token'],
     message: "Removing batch effect from Gene Count matrix, if errors, check metasheet for batches, refer to README for specifics"
     #priority: 2
     benchmark:
@@ -132,7 +137,7 @@ rule batch_effect_removal_rsem:
     shell:
         "Rscript viper/modules/scripts/batch_effect_removal.R {input.gene_cts} {input.annotFile} {params.batch_column} "
         "{params.datatype} {output.rsemcsvoutput} {output.rsempdfoutput} "
-        " && mv {input.gene_cts} analysis/{config[token]}/rsemlinks/without_batch_correction_rsem_gene_ct_matrix.csv "
+        " && mv {input.gene_cts} analysis/{params.token}/rsemlinks/without_batch_correction_rsem_gene_ct_matrix.csv "
 
 rule tpm_plot:
     input:
