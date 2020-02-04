@@ -52,10 +52,11 @@ hg38:
 
 #NOTE: mm9 is no RSEM ready!
 mm9:
+  star_index: ./ref_files/mm9/STAR_2.7.0f
   ref_fasta: ./ref_files/mm9/assembly/mm9.fasta
   gtf_file: ./ref_files/mm9/mm9.refseq.gtf
   bed_file: ./ref_files/mm9/refseqGenesMm9.bed
-  star_rRNA_index: ./ref_files/mm9/STAR_index_rRNA_SA_5/
+  star_rRNA_index: ./ref_files/mm9/STAR_2.7.0f_NCBIM37.67.ncrna/
 
   #Reference organism; possible value - hg19, mm9 etc.
   reference: mm9
