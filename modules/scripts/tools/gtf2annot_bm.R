@@ -13,7 +13,7 @@ library(biomaRt)
 
 #ADD addition fields by biomart
 mymart = useMart(biomart="ensembl", dataset=arg_dataset);
-gene_annots <- getBM(attributes=c("hgnc_symbol", "ensembl_gene_id", "entrezgene", "description", "go_id", "name_1006"), mart=mymart)
+gene_annots <- getBM(attributes=c("hgnc_symbol", "ensembl_gene_id", "external_gene_name", "description", "go_id", "name_1006"), mart=mymart)
 colnames(gene_annots) <- c("id", "EnsemblID", "EntrezID", "Gene Description", "GO ID", "GO Term")
 print(length(gene_annots))
 print(head(gene_annots))

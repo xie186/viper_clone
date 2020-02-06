@@ -52,9 +52,10 @@ VIPER.  This how-to will show you the steps.
 
 5. Build humanhg19.annot.csv.bz2:
    STEPS:
-      1. use gtf2annot_bm.R generate an annotation FROM biomart-dataset:
-         /mnt/cfce-stor1/home/lentaing/viper/weinstock/newrun/gtf2annot/src/
-         $ Rscript gtf2annot_bm.R hsapiens_gene_ensembl hg38.output.csv
+      1. use viper/modules/scripts/tools/gtf2annot_bm.R to generate 
+      	 an annotation FROM biomart-dataset:
+         
+	 $ Rscript gtf2annot_bm.R hsapiens_gene_ensembl hg38.output.csv
 
          #Where hsapiens_gene_ensembl is the biomart dataset for your species,
          #see below
@@ -69,8 +70,8 @@ VIPER.  This how-to will show you the steps.
                 #NOTE: you might have to scroll up to see your dataset names--
                 make sure you choose the dataset name, eg.
                 "hsapiens_gene_ensembl"
-      2. use toUpper to uppercase GeneNames because biomart doesn't do that
-         /mnt/cfce-stor1/home/lentaing/viper/weinstock/newrun/gtf2annot/src/
+      2. use viper/modules/scripts/tools/toUpper.py to uppercase GeneNames 
+      	 because biomart doesn't do that
          $ ./toUpper.py -f hg38.output.csv > hg38.upper.csv
       3. consolidateGo.py-- one gene per row (i.e. before this, each row was
          a gene-GoTerm association)

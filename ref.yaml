@@ -30,17 +30,16 @@ hg19:
 
 #NOTE: hg38 is not RSEM ready!
 hg38:
-  star_index: ./ref_files/hg38/STAR/
+  star_index: ./ref_files/hg38/STAR_2.7.0f/
   gtf_file: ./ref_files/hg38/hg38.refseq.gtf
   bed_file: ./ref_files/hg38/hg38.refseqGenes.bed
   ref_fasta: ./ref_files/hg38/assembly/hg38.fa
-  star_rRNA_index: ./ref_files/hg38/STAR_ncrna/
+  star_rRNA_index: ./ref_files/hg38/STAR_2.7.0f_GRCh38.ncrna/
 
   #Reference organism; possible value - hg19, mm9 etc.
   reference: hg38
   gene_annotation: viper/static/hg38.annot.csv.bz2
   #STAR-Fusion
-  #This is required only for PE data.
   genome_lib_dir: ./ref_files/hg38/STAR_fusion/ctat_genome_lib_build_dir/
 
   snpEff_conf: ./ref_files/hg38/snpEff/snpEff.config
@@ -62,8 +61,23 @@ mm9:
   reference: mm9
   gene_annotation: viper/static/mm9.annot.csv.bz2
   #STAR-Fusion
-  #This is required only for PE data.
   genome_lib_dir: ./ref_files/mm9/UCSC_mm9_build/
 
   snpEff_conf: ./ref_files/mm9/snpEff/snpEff.config
   snpEff_db: NCBIm37.66
+
+mm10:
+  star_index: ./ref_files/mm10/STAR_2.7.0f
+  ref_fasta: ./ref_files/mm10/assembly/mm10.fa
+  gtf_file: ./ref_files/mm10/mm10.refseq.gtf
+  bed_file: ./ref_files/mm10/mm10.refseqGenes.bed
+  star_rRNA_index: ./ref_files/mm10/STAR_2.7.0f_GRCm38.ncrna/
+
+  #Reference organism; possible value - hg19, mm10 etc.
+  reference: mm10
+  gene_annotation: viper/static/mm10.annot.csv.bz2
+  #STAR-Fusion
+  genome_lib_dir: ./ref_files/mm10/STAR_fusion/ctat_genome_lib_build_dir/
+
+  snpEff_conf: ./ref_files/mm10/snpEff/snpEff.config
+  snpEff_db: GRCm38.82
