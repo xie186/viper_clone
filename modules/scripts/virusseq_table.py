@@ -26,16 +26,17 @@ def main():
     sampleIDs=[n.strip().split("/")[-1].split('.')[0] for n in options.counts]
 
     print(",".join(["SampleID","TranscriptID","Counts","FPKM"]))
-
+    _dict = {}
     for (i, fpkm_f) in enumerate(options.fpkms):
         #READ in fpkm
         f = open(fpkm_f)
-        _dict = {}
         for l in f:
-            #GET TRANSCRIPT ID (elm 0) and FPKM (elm 1)
-            tmp = [tuple(e.strip().split()) for e in l.strip().split(";")]
-            transcript_id = tmp[0][1]
-            fpkm = tmp[1][1]
+            if l.strip().endswith(';'): #remove trailing ';'
+                l = l[:-2] #b/c the \n char is last
+            #GET TRANSCRIPT ID and FPKM from lookup dictionary
+            tmp = dict([tuple(e.strip().split()) for e in l.strip().split(";")])
+            transcript_id = tmp['transcript_id']
+            fpkm = tmp['FPKM']
             #EVALS will get rid of the "quotes"
             _dict[eval(transcript_id)] = [0, eval(fpkm)]
         #print(_dict)
